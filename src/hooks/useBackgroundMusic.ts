@@ -3,9 +3,31 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const STORAGE_KEY = "tuilabis:music";
-const TARGET_VOLUME = 0.35;
+const VOLUME_STORAGE_KEY = "tuilabis:music-volume";
+const DEFAULT_VOLUME = 0.35;
 const FADE_IN_S = 1.5;
 const FADE_OUT_S = 0.4;
+
+function clampVolume(value: number): number {
+  return Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : DEFAULT_VOLUME;
+}
+
+function readVolumePreference(): number {
+  try {
+    const saved = localStorage.getItem(VOLUME_STORAGE_KEY);
+    return saved === null ? DEFAULT_VOLUME : clampVolume(Number(saved));
+  } catch {
+    return DEFAULT_VOLUME;
+  }
+}
+
+function writeVolumePreference(value: number) {
+  try {
+    localStorage.setItem(VOLUME_STORAGE_KEY, String(value));
+  } catch {
+    // The control still works when storage is unavailable.
+  }
+}
 
 type WebkitWindow = Window & { webkitAudioContext?: typeof AudioContext };
 
@@ -42,9 +64,11 @@ export function useBackgroundMusic(src: string | null) {
   const pauseTimerRef = useRef<number | undefined>(undefined);
   const rafRef = useRef<number | undefined>(undefined);
   const wantsPlaybackRef = useRef(false);
+  const volumeRef = useRef(DEFAULT_VOLUME);
   const requestRef = useRef(0);
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState(false);
+  const [volume, setVolumeState] = useState(DEFAULT_VOLUME);
 
   const rampTo = useCallback((value: number, seconds: number) => {
     const ctx = ctxRef.current;
@@ -75,6 +99,9 @@ export function useBackgroundMusic(src: string | null) {
 
   const unlock = useCallback(() => {
     if (!src || audioRef.current) return;
+    const savedVolume = readVolumePreference();
+    volumeRef.current = savedVolume;
+    setVolumeState(savedVolume);
     const audio = new Audio(src);
     audio.loop = true;
     audio.preload = "auto";
@@ -144,7 +171,7 @@ export function useBackgroundMusic(src: string | null) {
         return;
       }
       setPlaying(true);
-      rampTo(TARGET_VOLUME, FADE_IN_S);
+      rampTo(volumeRef.current, FADE_IN_S);
     } catch {
       if (request === requestRef.current) {
         wantsPlaybackRef.current = false;
@@ -184,6 +211,30 @@ export function useBackgroundMusic(src: string | null) {
     }
   }, [pause, play]);
 
+  const setVolume = useCallback((value: number) => {
+    const next = clampVolume(value);
+    volumeRef.current = next;
+    setVolumeState(next);
+    writeVolumePreference(next);
+    if (audioRef.current && !audioRef.current.paused && wantsPlaybackRef.current && !document.hidden) {
+      rampTo(next, 0.12);
+    }
+  }, [rampTo]);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== VOLUME_STORAGE_KEY) return;
+      const next = readVolumePreference();
+      volumeRef.current = next;
+      setVolumeState(next);
+      if (audioRef.current && !audioRef.current.paused && wantsPlaybackRef.current && !document.hidden) {
+        rampTo(next, 0.12);
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [rampTo]);
+
   useEffect(() => {
     const onVisibility = () => {
       const audio = audioRef.current;
@@ -222,7 +273,7 @@ export function useBackgroundMusic(src: string | null) {
     [],
   );
 
-  return { available: Boolean(src), playing, error, unlock, start, toggle };
+  return { available: Boolean(src), playing, error, volume, unlock, start, toggle, setVolume };
 }
 
 export type BackgroundMusic = ReturnType<typeof useBackgroundMusic>;

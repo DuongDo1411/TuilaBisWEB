@@ -38,6 +38,7 @@ const vi = {
   controls: {
     language: "Ngôn ngữ",
     music: "Nhạc nền",
+    musicVolume: "Âm lượng nhạc nền",
     musicError: "Chưa phát được nhạc. Bấm nút loa để thử lại.",
     darkMode: "Chế độ tối",
     switchToLight: "Chuyển sang giao diện sáng",
@@ -105,6 +106,7 @@ const en: Dictionary = {
   controls: {
     language: "Language",
     music: "Background music",
+    musicVolume: "Background music volume",
     musicError: "Music could not play. Press the speaker button to try again.",
     darkMode: "Dark mode",
     switchToLight: "Switch to light mode",

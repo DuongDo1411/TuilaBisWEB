@@ -202,8 +202,9 @@ Màu mèo/trà sữa là token riêng (`--cat-*`, `--tea-*`, `--tapioca`, `--str
 - Video chào mừng: nút **Bỏ qua** + **Tắt tiếng** luôn hiện.
 - Video lỗi: nếu lỗi lúc còn ở màn chờ thì **không** bỏ qua màn chờ; khi bấm nút sẽ vào thẳng
   giao diện chính (nhạc vẫn được mở khóa).
-- Nhạc nền chỉ phát **sau** video, fade-in 1.5s, âm lượng 35%, lặp; điều khiển âm lượng qua
-  Web Audio GainNode (iOS không cho đổi `audio.volume`).
+- Nhạc nền chỉ phát **sau** video, fade-in 1.5s, mặc định 35%, lặp; nút bật/tắt và thanh chỉnh
+  âm lượng 0–100% luôn hiển thị ở trang chính. Lưu âm lượng trong `localStorage` (`tuilabis:music-volume`),
+  đồng bộ giữa các tab; điều khiển qua Web Audio GainNode (iOS không cho đổi `audio.volume`).
 - Nút bật/tắt nhạc luôn hiện ở giao diện chính (WCAG 1.4.2), nhớ lựa chọn trong `localStorage`.
 
 ## Icon

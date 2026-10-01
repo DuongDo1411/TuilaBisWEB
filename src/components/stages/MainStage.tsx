@@ -36,10 +36,17 @@ export function MainStage({
           <CloverGlyph className="motion-bob size-10 text-primary" />
           <h1 className="font-display text-2xl font-extrabold sm:text-3xl">{profile.displayName}</h1>
         </div>
-        <div className="ml-auto flex shrink-0 items-center gap-2">
+        <div className="ml-auto flex min-w-0 basis-full flex-wrap items-center justify-end gap-2 sm:basis-auto">
           <ThemeToggle labels={t.controls} />
           {music.available && (
-            <MusicToggle playing={music.playing} label={t.controls.music} onToggle={music.toggle} />
+            <MusicToggle
+              playing={music.playing}
+              label={t.controls.music}
+              volume={music.volume}
+              volumeLabel={t.controls.musicVolume}
+              onToggle={music.toggle}
+              onVolumeChange={music.setVolume}
+            />
           )}
           <LanguageToggle lang={lang} label={t.controls.language} onChange={onChangeLang} />
         </div>
