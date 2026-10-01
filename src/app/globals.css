@@ -1,0 +1,532 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens — "Matcha Dâu" (xanh lá + hồng phấn), style Claymorphism.
+   Xem design-system/tuilabis/MASTER.md. Mọi cặp chữ/nền đã đo tương phản.
+   Primitive → Semantic → Component. Component chỉ dùng Semantic/Component.
+   ========================================================================== */
+
+:root {
+  /* ---- Primitive ---- */
+  --white: #ffffff;
+  --cream-50: #f3fbf4;
+  --mint-50: #f0fdf4;
+  --mint-100: #dcfce7;
+  --mint-300: #86efac;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  --forest-900: #14532d;
+  --sage-700: #44725a;
+  --pink-100: #fce7f3;
+  --pink-300: #f9a8d4;
+  --pink-500: #ec4899;
+  --pink-600: #db2777;
+  --pink-700: #be185d;
+  --butter-100: #fef3c7;
+  --butter-300: #fde68a;
+  --amber-700: #b45309;
+  --forest-950: #11241f;
+  --forest-850: #19332a;
+  --forest-800: #234236;
+  --sage-200: #b2ccba;
+  --ivory-50: #edf8ef;
+
+  --rarity-blue: #4b69ff;
+  --rarity-purple: #8847ff;
+  --rarity-pink: #d32ce6;
+  --rarity-red: #eb4b4b;
+  --rarity-gold: #e4ae39;
+
+  --brand-youtube: #ff0000;
+  --brand-facebook: #1877f2;
+  /* Cyan #25F4EE của TikTok chỉ đạt 1.3:1 trên nền sáng, nên dùng màu đen chính thức */
+  --brand-tiktok: #161823;
+  --brand-discord: #5865f2;
+
+  /* ---- Semantic ---- */
+  --bg: var(--cream-50);
+  --surface: var(--mint-50); /* mục bên trong panel */
+  --surface-raised: var(--white); /* ô nổi, nút phụ */
+  --fg: var(--forest-900); /* 8.6:1 trên nền */
+  --fg-muted: var(--sage-700); /* từ 5.0:1 trở lên trên mọi surface */
+  --primary: var(--green-500); /* hình trang trí, thanh tiến độ — KHÔNG dùng làm chữ */
+  --primary-soft: var(--mint-300); /* nền nút pastel */
+  --primary-softer: var(--mint-100);
+  --primary-strong: var(--green-700); /* chữ/icon xanh — 5.0:1 trên trắng */
+  --leaf: var(--green-600);
+  --on-primary: var(--forest-900); /* chữ trên nút pastel — 6.5:1 */
+  --accent: var(--pink-300);
+  --accent-vivid: var(--pink-500);
+  --accent-soft: var(--pink-100);
+  --accent-strong: var(--pink-700); /* chữ hồng — từ 5.1:1 */
+  --butter-soft: var(--butter-100);
+  --butter-strong: var(--amber-700);
+  --line: rgb(22 163 74 / 0.16);
+  --line-strong: rgb(22 163 74 / 0.4);
+  --ring: var(--pink-600); /* 4.4:1 trên nền */
+  --petal: var(--pink-300);
+  --pollen: var(--butter-300);
+  --leaf-vein: rgb(20 83 45 / 0.22);
+
+  /* ---- Component: clay ---- */
+  --clay-top: var(--white);
+  --clay-bottom: #f7fdf9;
+  --clay-edge: var(--white);
+  --clay-inner-shade: rgb(22 101 52 / 0.08);
+  --clay-inner-light: rgb(255 255 255 / 0.9);
+  --clay-drop: rgb(22 101 52 / 0.2);
+  --shadow-pink: rgb(236 72 153 / 0.28);
+  --shadow-mint: rgb(34 197 94 / 0.3);
+  --social-icon-bg: var(--surface-raised);
+  --media-backdrop: var(--forest-900);
+  --button-edge: rgb(255 255 255 / 0.75);
+  --button-shade: rgb(20 83 45 / 0.14);
+  --button-light: rgb(255 255 255 / 0.6);
+  --button-pressed-shade: rgb(20 83 45 / 0.16);
+  --button-pressed-light: rgb(255 255 255 / 0.5);
+
+  /* ---- Component: nền vườn ---- */
+  --garden-dot: rgb(22 163 74 / 0.07);
+  --garden-mint-top: rgb(134 239 172 / 0.5);
+  --garden-pink: rgb(249 168 212 / 0.4);
+  --garden-mint-bottom: rgb(187 247 208 / 0.6);
+  --garden-butter: rgb(253 230 138 / 0.35);
+
+  /* ---- Component: sticker (mèo, trà sữa) ---- */
+  --sticker-backing: var(--white); /* viền trắng kiểu sticker bế hình */
+  --sticker-line: var(--forest-900);
+  --cat-ginger: #fdba74;
+  --cat-stripe: #fb923c;
+  --cat-white: var(--white);
+  --cat-ear: #fbcfe8;
+  --cat-nose: #f472b6;
+  --blush: var(--pink-300);
+  --tea-matcha: #bbf7d0;
+  --tea-strawberry: #fbcfe8;
+  --tapioca: #6b4226;
+  --straw-pink: var(--pink-300);
+  --straw-mint: var(--mint-300);
+}
+
+/* Matcha Dâu ban đêm: nền xanh rừng, chữ ngà, điểm nhấn pastel. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--forest-950);
+  --surface: var(--forest-850);
+  --surface-raised: var(--forest-800);
+  --fg: var(--ivory-50);
+  --fg-muted: var(--sage-200);
+  --primary: #55c88b;
+  --primary-soft: #91dfad;
+  --primary-softer: #294d3b;
+  --primary-strong: #98e5b5;
+  --leaf: #3ba776;
+  --on-primary: #123522;
+  --accent: #e6a1c4;
+  --accent-vivid: #f08bbb;
+  --accent-soft: #4b2c40;
+  --accent-strong: #f6b6d6;
+  --butter-soft: #483e27;
+  --butter-strong: #f2d690;
+  --line: #416551;
+  --line-strong: #658875;
+  --ring: var(--pink-300);
+  --petal: #d992b7;
+  --pollen: #e5cf92;
+
+  --clay-top: #233d33;
+  --clay-bottom: #1b3028;
+  --clay-edge: #3c5e4c;
+  --clay-inner-shade: rgb(4 16 11 / 0.35);
+  --clay-inner-light: rgb(174 226 192 / 0.06);
+  --clay-drop: rgb(0 10 5 / 0.48);
+  --shadow-pink: rgb(236 72 153 / 0.14);
+  --shadow-mint: rgb(34 197 94 / 0.16);
+  --button-edge: #51765d;
+  --button-shade: rgb(4 16 11 / 0.2);
+  --button-light: rgb(220 252 231 / 0.12);
+  --button-pressed-shade: rgb(4 16 11 / 0.3);
+  --button-pressed-light: rgb(220 252 231 / 0.08);
+
+  --garden-dot: rgb(152 229 181 / 0.06);
+  --garden-mint-top: rgb(85 200 139 / 0.12);
+  --garden-pink: rgb(230 161 196 / 0.08);
+  --garden-mint-bottom: rgb(85 200 139 / 0.08);
+  --garden-butter: rgb(242 214 144 / 0.06);
+
+  --rarity-blue: #829dff;
+  --rarity-purple: #b191ff;
+  --rarity-pink: #e991ef;
+  --rarity-red: #ff9292;
+  --rarity-gold: #f2ce70;
+  --brand-tiktok: var(--ivory-50);
+  --social-icon-bg: var(--bg);
+  --media-backdrop: var(--forest-950);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-softer: var(--primary-softer);
+  --color-primary-strong: var(--primary-strong);
+  --color-leaf: var(--leaf);
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-accent-vivid: var(--accent-vivid);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-strong: var(--accent-strong);
+  --color-butter-soft: var(--butter-soft);
+  --color-butter-strong: var(--butter-strong);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ring: var(--ring);
+
+  --font-display: var(--font-baloo), ui-rounded, system-ui, sans-serif;
+  --font-sans: var(--font-nunito), ui-rounded, system-ui, sans-serif;
+
+  --radius-panel: 1.75rem;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  color-scheme: light;
+  background: var(--bg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Claymorphism (styles.csv → claymorphism)
+   Viền dày 3px, bóng kép trong + ngoài, nền gradient pastel, nảy mềm khi bấm.
+   ========================================================================== */
+
+@utility clay {
+  background: linear-gradient(160deg, var(--clay-top), var(--clay-bottom));
+  border: 3px solid var(--clay-edge);
+  box-shadow:
+    inset -3px -4px 10px var(--clay-inner-shade),
+    inset 3px 3px 8px var(--clay-inner-light),
+    6px 10px 26px -10px var(--clay-drop);
+}
+
+@utility clay-button {
+  border: 3px solid var(--button-edge);
+  box-shadow:
+    inset -3px -4px 8px var(--button-shade),
+    inset 3px 3px 6px var(--button-light),
+    0 8px 18px -8px var(--clay-drop);
+  transition:
+    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 200ms ease-out,
+    background-color 200ms ease-out,
+    color 200ms ease-out;
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+  &:active:not(:disabled) {
+    transform: translateY(2px) scale(0.97);
+    box-shadow:
+      inset -2px -2px 6px var(--button-pressed-shade),
+      inset 2px 2px 4px var(--button-pressed-light),
+      0 3px 8px -6px var(--clay-drop);
+  }
+}
+
+/* Icon đúng ngay từ lần vẽ đầu, trước khi React khôi phục trạng thái nút. */
+.theme-sun,
+[data-theme="dark"] .theme-moon {
+  display: none;
+}
+[data-theme="dark"] .theme-sun {
+  display: block;
+}
+
+/* ==========================================================================
+   Social link — màu thương hiệu chỉ hiện khi hover/focus.
+   --brand được set inline theo từng kênh.
+   ========================================================================== */
+
+.brand-link {
+  --brand: var(--primary-strong);
+}
+.brand-icon {
+  color: var(--primary-strong);
+  transition: color 200ms ease;
+}
+.brand-icon.is-muted {
+  color: var(--fg-muted);
+}
+.brand-link:hover,
+.brand-link:focus-visible {
+  border-color: color-mix(in oklab, var(--brand) 50%, transparent);
+  background-color: color-mix(in oklab, var(--brand) 8%, var(--surface));
+}
+.brand-link:hover .brand-icon,
+.brand-link:focus-visible .brand-icon {
+  color: var(--brand);
+}
+
+/* Dải gacha dùng ô cố định để kết quả dừng chính xác dưới vạch chỉ. */
+.gacha-card {
+  flex: 0 0 6rem;
+  width: 6rem;
+  min-height: 9rem;
+}
+.gacha-result-card {
+  flex-basis: 8rem;
+  width: 8rem;
+  min-height: 11rem;
+}
+.gacha-reel-track {
+  transform: translate3d(var(--reel-offset, 0px), 0, 0);
+  transition: transform var(--spin-duration, 17.5s) cubic-bezier(0.13, 0.55, 0.16, 1);
+  visibility: hidden;
+}
+.gacha-idle-track {
+  animation: gacha-idle-right 23s linear infinite;
+}
+.gacha-spin-progress {
+  transform: scaleX(0);
+  animation: gacha-progress var(--spin-duration, 17.5s) linear forwards;
+}
+.gacha-congrats {
+  animation: gacha-congrats 580ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.gacha-celebration {
+  isolation: isolate;
+}
+.gacha-celebration-flash {
+  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--accent-vivid) 30%, transparent), transparent 72%);
+  animation: gacha-screen-flash 950ms ease-out both;
+}
+.gacha-firework-ring {
+  width: 4rem;
+  height: 4rem;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 30px currentColor;
+  animation: gacha-firework-ring 1.5s ease-out var(--burst-delay) both;
+}
+.gacha-firework-spark {
+  width: 9px;
+  height: 22px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 18px currentColor;
+  animation: gacha-firework-spark 2.2s cubic-bezier(0.12, 0.6, 0.18, 1) var(--burst-delay) both;
+}
+.gacha-screen-confetti {
+  top: -3rem;
+  width: 9px;
+  height: 17px;
+  border-radius: 2px;
+  animation: gacha-screen-confetti var(--fall-duration) ease-in var(--fall-delay) both;
+}
+@keyframes gacha-idle-right {
+  from { transform: translate3d(calc(-50% - 6px), 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+@keyframes gacha-progress {
+  to { transform: scaleX(1); }
+}
+@keyframes gacha-congrats {
+  from { transform: translate3d(0, 10px, 0) scale(0.85); opacity: 0; }
+  to { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+@keyframes gacha-screen-flash {
+  from { opacity: 0.85; }
+  to { opacity: 0; }
+}
+@keyframes gacha-firework-ring {
+  from { transform: translate3d(-50%, -50%, 0) scale(0.2); opacity: 0.9; }
+  to { transform: translate3d(-50%, -50%, 0) scale(7); opacity: 0; }
+}
+@keyframes gacha-firework-spark {
+  0% { transform: translate3d(0, 0, 0) scale(0); opacity: 0; }
+  13% { opacity: 1; }
+  65% { opacity: 1; }
+  100% { transform: translate3d(var(--spark-x), var(--spark-y), 0) rotate(190deg) scale(0.35); opacity: 0; }
+}
+@keyframes gacha-screen-confetti {
+  0% { transform: translate3d(0, -15vh, 0) rotate(0); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translate3d(var(--fall-drift), 115dvh, 0) rotate(var(--fall-spin)); opacity: 0; }
+}
+@media (min-width: 640px) {
+  .gacha-card:not(.gacha-result-card) {
+    flex-basis: 7rem;
+    width: 7rem;
+    min-height: 10rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gacha-reel-track { transition: none; }
+  .gacha-idle-track,
+  .gacha-spin-progress,
+  .gacha-congrats,
+  .gacha-celebration { animation: none; }
+  .gacha-spin-progress { transform: scaleX(1); }
+  .gacha-celebration { display: none; }
+}
+
+/* ==========================================================================
+   Nền động — đồng cỏ pastel: cỏ 4 lá, hoa hồng, cánh hoa rơi
+   ========================================================================== */
+
+.garden-glow {
+  background:
+    radial-gradient(circle, var(--garden-dot) 1.5px, transparent 1.8px) 0 0 / 28px 28px,
+    radial-gradient(55% 45% at 8% 4%, var(--garden-mint-top), transparent 70%),
+    radial-gradient(50% 40% at 96% 10%, var(--garden-pink), transparent 70%),
+    radial-gradient(60% 45% at 88% 100%, var(--garden-mint-bottom), transparent 70%),
+    radial-gradient(45% 35% at 4% 96%, var(--garden-butter), transparent 70%);
+}
+
+.sticker {
+  overflow: visible;
+  filter: drop-shadow(0 5px 6px rgb(22 101 52 / 0.18));
+}
+
+.particle {
+  position: absolute;
+  top: 0;
+  will-change: transform;
+}
+
+@keyframes fall {
+  from {
+    transform: translate3d(0, -15vh, 0);
+  }
+  to {
+    transform: translate3d(0, 115vh, 0);
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: translateX(calc(var(--sway) * -1)) rotate(calc(var(--tilt) * -1));
+  }
+  50% {
+    transform: translateX(var(--sway)) rotate(var(--tilt));
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(calc(var(--rot, 0deg) + 5deg));
+  }
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes countdown {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.motion-fall {
+  animation: fall var(--dur) linear var(--delay) infinite;
+}
+.motion-sway {
+  animation: sway var(--sway-dur) ease-in-out var(--delay) infinite;
+}
+.motion-breathe {
+  animation: breathe 5s ease-in-out infinite;
+}
+.motion-bob {
+  animation: bob 4s ease-in-out infinite;
+}
+.motion-float {
+  transform: rotate(var(--rot, 0deg));
+  animation: float var(--float-dur, 6s) ease-in-out var(--float-delay, 0s) infinite;
+}
+.motion-stage-in {
+  animation: stage-in 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.motion-countdown {
+  transform-origin: left center;
+  animation: countdown var(--countdown) linear both;
+}
+
+/* Tôn trọng người dùng bật "giảm chuyển động" — mọi thứ đứng yên ở trạng thái cuối */
+@media (prefers-reduced-motion: reduce) {
+  .motion-fall,
+  .motion-sway,
+  .motion-breathe,
+  .motion-bob,
+  .motion-float,
+  .motion-stage-in {
+    animation: none !important;
+  }
+  .particle {
+    top: var(--y);
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
