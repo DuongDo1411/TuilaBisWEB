@@ -81,7 +81,7 @@ export function signGachaCookie(state: GachaCookie): string {
 export function gachaStatus(state: GachaCookie): GachaStatus {
   return {
     remaining: Math.max(0, 1 + state.bonus - state.used),
-    unlimited: process.env.NODE_ENV === "development" && process.env.GACHA_UNLIMITED_SPINS === "true",
+    unlimited: process.env.GACHA_UNLIMITED_SPINS === "true",
     resetAt: nextVietnamMidnight(state.day),
     lastSticker: state.lastStickerId ? stickerById.get(state.lastStickerId) ?? null : null,
   };

@@ -12,9 +12,11 @@ npm run dev      # mở http://localhost:3000
 Gacha cần biến môi trường `GACHA_COOKIE_SECRET` dài tối thiểu 32 ký tự để ký cookie.
 Tạo `.env.local` theo `.env.example` trước khi chạy local và đặt cùng giá trị bí mật đó
 trên môi trường deploy. Giữ nguyên giá trị khi deploy lại để cookie đã cấp tiếp tục hợp lệ.
-Để thử quay liên tục bằng `npm run dev`, đặt `GACHA_UNLIMITED_SPINS=true` trong `.env.local`.
-Chế độ này chỉ hoạt động khi chạy development.
-Đổi lại thành `false` khi muốn dùng giới hạn mỗi ngày; lượt thử không tiêu tốn lượt miễn phí.
+Để thử quay liên tục, đặt `GACHA_UNLIMITED_SPINS=true` trong `.env.local` hoặc trong
+Environment Variables của Vercel cho môi trường muốn thử. Cờ này cũng hoạt động trên bản deploy;
+nếu bật cho Production thì mọi khách truy cập đều được quay không giới hạn.
+Đổi lại thành `false` (và redeploy trên Vercel) khi muốn dùng giới hạn mỗi ngày;
+lượt thử không tiêu tốn lượt miễn phí.
 
 ## Sửa nội dung — chỉ cần đụng vào `src/content/`
 
