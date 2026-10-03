@@ -68,9 +68,31 @@ export function Experience({ initialLang }: { initialLang: Locale }) {
     setVideoMuted(video.muted);
   };
 
+  const resumeVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // A small seek can restart decoding when mobile browsers stop on a frame
+    // without actually pausing the video element.
+    if (!video.paused && Number.isFinite(video.duration) && video.currentTime < video.duration - 0.3) {
+      const targetTime = video.currentTime + 0.25;
+      for (let i = 0; i < video.buffered.length; i += 1) {
+        if (targetTime >= video.buffered.start(i) && targetTime < video.buffered.end(i)) {
+          video.currentTime = targetTime;
+          break;
+        }
+      }
+    }
+    video.play().catch(() => {
+      video.muted = true;
+      setVideoMuted(true);
+      void video.play().catch(() => {});
+    });
+  };
+
   return (
     <>
-      <CloverField />
+      <CloverField paused={stage === "intro"} />
 
       {stage !== "main" && (
         <div className="fixed right-4 top-4 z-50 flex items-center gap-2 sm:right-6 sm:top-6">
@@ -88,6 +110,7 @@ export function Experience({ initialLang }: { initialLang: Locale }) {
           active={stage === "intro"}
           muted={videoMuted}
           onToggleMute={toggleVideoMute}
+          onResume={resumeVideo}
           onFinish={goMain}
         />
       )}

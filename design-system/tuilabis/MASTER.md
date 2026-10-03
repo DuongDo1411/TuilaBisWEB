@@ -81,6 +81,11 @@ vì chủ dự án thấy nền đen quá u ám và muốn vibe dễ thương, �
 Ba cấp: **R** (`--rarity-blue`), **SR** (`--rarity-purple`), **SSR** (`--rarity-gold`).
 Tỷ lệ quay hiện tại: R 80%, SR 17%, SSR 3%; các sticker trong cùng cấp có xác suất bằng nhau.
 Màu độ hiếm **luôn đi kèm nhãn chữ** (không truyền thông tin chỉ bằng màu).
+Sau khi dải quay dừng, R có vòng sáng và đốm sao xanh quanh thẻ cùng hai chùm pháo hoa xanh
+phủ màn hình (~1,5s); SR có hai vòng tím, ba chùm pháo hoa và ít kim tuyến phủ màn hình (~2,5s);
+SSR có hào quang vàng, bảy chùm pháo hoa và nhiều kim tuyến phủ màn hình (~4s).
+Không tiết lộ màu trước khi hiện kết quả. Viền/nhãn độ hiếm
+giữ lại sau hiệu ứng; khi bật giảm chuyển động chỉ hiện thẻ và màu, không chạy hiệu ứng.
 
 ## Chế độ sáng / tối
 
@@ -199,8 +204,9 @@ Màu mèo/trà sữa là token riêng (`--cat-*`, `--tea-*`, `--tapioca`, `--str
 ## Âm thanh & video
 
 - Nút đầu tiên = cú tương tác mở khóa autoplay có tiếng (video + nhạc nền).
-- Video chào mừng: Bischao2 (giữ tiếng gốc) nối với bischao (bỏ tiếng gốc, phát đoạn
-  Please Tell Me Why 0:28–0:40, hình được kéo tới 12 giây); nút **Bỏ qua** + **Tắt tiếng** luôn hiện.
+- Video chào mừng: Bischao2 (giữ tiếng gốc) nối với Video 2 đã cắt.mov (bỏ tiếng gốc,
+  phát đoạn Please Tell Me Why 0:28–0:40; cảnh gốc dài 7,77 giây được quay chậm còn khoảng 65%
+  để khớp 12 giây nhạc); nút **Bỏ qua** + **Tắt tiếng** luôn hiện.
 - Video lỗi: nếu lỗi lúc còn ở màn chờ thì **không** bỏ qua màn chờ; khi bấm nút sẽ vào thẳng
   giao diện chính (nhạc vẫn được mở khóa).
 - Nhạc nền chỉ phát **sau** video, fade-in 1.5s, mặc định 35%, lặp; nút bật/tắt và thanh chỉnh

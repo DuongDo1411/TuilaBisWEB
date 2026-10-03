@@ -3,7 +3,7 @@
  * Để null = chưa có file.
  *
  * introVideo    video chào mừng (quay ngang 16:9), gồm hai cảnh nối liền trong một file.
- *               Cảnh hai bỏ tiếng gốc và dùng nhạc Please Tell Me Why từ 0:28 đến 0:40.
+ *               Cảnh hai là Video 2 đã cắt.mov, bỏ tiếng gốc và dùng nhạc Please Tell Me Why từ 0:28 đến 0:40.
  *               null → hiện khung tạm vài giây.
  * introPoster   ảnh hiện trong lúc video đang tải (nên là 1 khung hình của video).
  * introCaptions phụ đề WebVTT (.vtt) tiếng Việt — tuỳ chọn nhưng nên có.
@@ -15,7 +15,7 @@ export const media: {
   introCaptions: string | null;
   music: string | null;
 } = {
-  introVideo: "/media/bis-welcome.mp4",
+  introVideo: "/media/bis-welcome.mp4?v=2",
   introPoster: null,
   introCaptions: null,
   music: "/media/couple-n-thousand-stars.mp3",

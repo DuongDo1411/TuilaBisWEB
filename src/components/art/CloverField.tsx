@@ -122,9 +122,9 @@ const PAW_PRINTS = [
   "right-[12%] top-[75%] size-5 rotate-[15deg] max-sm:hidden",
 ];
 
-export function CloverField() {
+export function CloverField({ paused = false }: { paused?: boolean }) {
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+    <div aria-hidden="true" className={cn("pointer-events-none fixed inset-0 z-0 overflow-hidden", paused && "garden-paused")}>
       <div className="garden-glow absolute inset-0" />
 
       {PARTICLES.map((p, i) => (

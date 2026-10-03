@@ -1,7 +1,7 @@
 "use client";
 
-import { type CSSProperties, type Ref, useEffect, useState } from "react";
-import { FastForward, SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
+import { type CSSProperties, type RefObject, useEffect, useState } from "react";
+import { CircleNotch, FastForward, Play, SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
 import { INTRO_PLACEHOLDER_SECONDS, media } from "@/content/media";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { CloverGlyph } from "@/components/art/Glyphs";
@@ -20,16 +20,19 @@ export function IntroVideo({
   active,
   muted,
   onToggleMute,
+  onResume,
   onFinish,
 }: {
-  ref: Ref<HTMLVideoElement>;
+  ref: RefObject<HTMLVideoElement | null>;
   t: Dictionary;
   active: boolean;
   muted: boolean;
   onToggleMute: () => void;
+  onResume: () => void;
   onFinish: () => void;
 }) {
   const [progress, setProgress] = useState(0);
+  const [playbackState, setPlaybackState] = useState<"playing" | "buffering" | "paused">("buffering");
   const hasVideo = Boolean(media.introVideo);
 
   useEffect(() => {
@@ -37,6 +40,33 @@ export function IntroVideo({
     const timer = window.setTimeout(onFinish, INTRO_PLACEHOLDER_SECONDS * 1000);
     return () => window.clearTimeout(timer);
   }, [active, hasVideo, onFinish]);
+
+  useEffect(() => {
+    if (!active || !hasVideo) return;
+
+    let previousTime = -1;
+    let unchangedSeconds = 0;
+    const timer = window.setInterval(() => {
+      const video = ref.current;
+      if (!video || video.ended || video.seeking || document.hidden) {
+        previousTime = -1;
+        unchangedSeconds = 0;
+        return;
+      }
+      if (video.paused) {
+        setPlaybackState("paused");
+        return;
+      }
+
+      const time = video.currentTime;
+      unchangedSeconds = time <= previousTime + 0.02 ? unchangedSeconds + 1 : 0;
+      previousTime = time;
+      if (unchangedSeconds >= 3) setPlaybackState("buffering");
+      else if (unchangedSeconds === 0) setPlaybackState("playing");
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [active, hasVideo, ref]);
 
   return (
     <section
@@ -46,7 +76,7 @@ export function IntroVideo({
         active ? "motion-stage-in flex" : "hidden",
       )}
     >
-      <div className="clay w-full max-w-4xl rounded-panel p-2 sm:p-3">
+      <div className="clay relative w-full max-w-4xl rounded-panel p-2 sm:p-3">
         {hasVideo ? (
           <video
             ref={ref}
@@ -54,6 +84,12 @@ export function IntroVideo({
             poster={media.introPoster ?? undefined}
             preload="auto"
             playsInline
+            onPlaying={() => setPlaybackState("playing")}
+            onWaiting={() => active && setPlaybackState("buffering")}
+            onStalled={() => active && setPlaybackState("buffering")}
+            onPause={(event) => {
+              if (active && !event.currentTarget.ended) setPlaybackState("paused");
+            }}
             onEnded={onFinish}
             // Video được tải từ màn chờ: lỗi xảy ra lúc đó không được bỏ qua màn chờ.
             // Experience tự kiểm tra video.error khi người xem bấm nút.
@@ -76,6 +112,22 @@ export function IntroVideo({
               <CloverGlyph className="motion-bob size-20 text-primary sm:size-24" />
               <p className="font-display text-2xl font-bold sm:text-3xl">{t.intro.placeholderTitle}</p>
               <p className="text-sm text-fg-muted">{t.intro.placeholderNote}</p>
+            </div>
+          </div>
+        )}
+        {hasVideo && active && playbackState !== "playing" && (
+          <div className="pointer-events-none absolute inset-x-4 bottom-4 flex justify-center" aria-live="polite">
+            <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-black/75 px-3 py-2 text-sm font-medium text-white shadow-lg backdrop-blur-sm">
+              {playbackState === "buffering" && <CircleNotch aria-hidden="true" className="size-4 animate-spin" />}
+              <span>{playbackState === "paused" ? t.intro.paused : t.intro.buffering}</span>
+              <button
+                type="button"
+                onClick={onResume}
+                className="inline-flex min-h-9 items-center gap-1 rounded-full bg-white px-3 font-bold text-green-900 hover:bg-green-50"
+              >
+                <Play aria-hidden="true" weight="fill" className="size-3" />
+                {t.intro.resume}
+              </button>
             </div>
           </div>
         )}

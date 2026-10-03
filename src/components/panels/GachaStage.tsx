@@ -15,6 +15,14 @@ const START_INDEX = 28;
 const REEL_LENGTH = 33;
 const SPIN_DURATION_MS = 17500;
 const IDLE_CARDS = 14;
+const R_SPARKLES = [
+  { x: "-9%", y: "12%", delay: 0 },
+  { x: "104%", y: "9%", delay: 120 },
+  { x: "-13%", y: "47%", delay: 250 },
+  { x: "107%", y: "49%", delay: 80 },
+  { x: "1%", y: "99%", delay: 190 },
+  { x: "97%", y: "101%", delay: 310 },
+] as const;
 
 type GachaResponse = GachaStatus & { result?: Sticker; error?: string };
 
@@ -29,25 +37,38 @@ function MysteryCard({ label }: { label: string }) {
   );
 }
 
-function StickerCard({ sticker }: { sticker: Sticker }) {
+function StickerCard({ sticker, celebrating }: { sticker: Sticker; celebrating: boolean }) {
   const rarity = rarities.find((item) => item.id === sticker.rarity)!;
   return (
-    <div
-      style={{ "--rarity": rarity.color } as CSSProperties}
-      className="gacha-card gacha-result-card relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-[3px] border-[var(--rarity)] bg-surface-raised p-2 text-center shadow-[0_10px_24px_-8px_var(--rarity)]"
-    >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,color-mix(in_oklab,var(--rarity)_15%,transparent),transparent_75%)]" />
-      <Image
-        src={sticker.image}
-        alt=""
-        width={128}
-        height={128}
-        sizes="128px"
-        className="relative aspect-square w-full object-contain"
-      />
-      <span className="relative text-xs font-bold leading-tight text-fg">{sticker.name}</span>
-      <span className="relative rounded-full bg-surface px-2 text-xs font-extrabold text-fg">{sticker.rarity}</span>
-      <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[var(--rarity)]" />
+    <div className="gacha-result-wrap relative" data-rarity={sticker.rarity} style={{ "--rarity": rarity.color } as CSSProperties}>
+      {celebrating && <span aria-hidden="true" className="gacha-result-aura pointer-events-none absolute inset-0" />}
+      <div
+        className={`gacha-card gacha-result-card relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-[3px] border-[var(--rarity)] bg-surface-raised p-2 text-center${celebrating ? " gacha-result-reveal" : ""}`}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,color-mix(in_oklab,var(--rarity)_15%,transparent),transparent_75%)]" />
+        <Image
+          src={sticker.image}
+          alt=""
+          width={128}
+          height={128}
+          sizes="128px"
+          className="relative aspect-square w-full object-contain"
+        />
+        <span className="relative text-xs font-bold leading-tight text-fg">{sticker.name}</span>
+        <span className="relative rounded-full bg-surface px-2 text-xs font-extrabold text-fg">{sticker.rarity}</span>
+        <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[var(--rarity)]" />
+      </div>
+      {celebrating && sticker.rarity === "R" && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          {R_SPARKLES.map((sparkle, index) => (
+            <i
+              key={index}
+              className="gacha-card-sparkle absolute block"
+              style={{ left: sparkle.x, top: sparkle.y, "--spark-delay": `${sparkle.delay}ms` } as CSSProperties}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -213,7 +234,7 @@ export function GachaStage({ t, className }: { lang: Locale; t: Dictionary; clas
         ) : shownResult ? (
           <div className="relative z-10 mx-auto flex flex-col items-center gap-2 px-5 text-center">
             {celebrating && <p className="gacha-congrats relative z-10 font-display text-xl font-extrabold text-accent-strong">{t.gacha.congrats}</p>}
-            <StickerCard sticker={shownResult} />
+            <StickerCard sticker={shownResult} celebrating={celebrating} />
             <p className="font-display text-lg font-bold">{t.gacha.latest}: {shownResult.name} · {shownResult.rarity}</p>
           </div>
         ) : (
@@ -222,7 +243,7 @@ export function GachaStage({ t, className }: { lang: Locale; t: Dictionary; clas
           </div>
         )}
         {spinning && <div aria-hidden="true" className="gacha-spin-progress pointer-events-none absolute bottom-0 left-0 z-30 h-1.5 w-full origin-left bg-accent-vivid" style={{ "--spin-duration": `${SPIN_DURATION_MS}ms` } as CSSProperties} />}
-        {shownResult && celebrating && <GachaCelebration />}
+        {shownResult && celebrating && <GachaCelebration rarity={shownResult.rarity} />}
         <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-7 bg-gradient-to-r from-surface to-transparent sm:w-12" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-7 bg-gradient-to-l from-surface to-transparent sm:w-12" />
       </div>

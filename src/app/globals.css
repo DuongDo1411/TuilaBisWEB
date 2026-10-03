@@ -329,6 +329,36 @@ body {
   flex-basis: 8rem;
   width: 8rem;
   min-height: 11rem;
+  box-shadow: 0 10px 24px -8px var(--rarity);
+}
+.gacha-result-wrap[data-rarity="SSR"] .gacha-result-card {
+  box-shadow: 0 0 28px color-mix(in srgb, var(--rarity) 65%, transparent), 0 10px 24px -8px var(--rarity);
+}
+.gacha-result-reveal {
+  animation: gacha-card-reveal 650ms cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+.gacha-result-wrap[data-rarity="SR"] .gacha-result-reveal { animation-duration: 820ms; }
+.gacha-result-wrap[data-rarity="SSR"] .gacha-result-reveal { animation-duration: 1050ms; }
+.gacha-result-aura::before,
+.gacha-result-aura::after {
+  content: "";
+  position: absolute;
+  inset: -0.5rem;
+  border: 2px solid var(--rarity);
+  border-radius: 1.5rem;
+  animation: gacha-card-ring var(--ring-duration, 1.5s) ease-out both;
+}
+.gacha-result-aura::after { animation-delay: 260ms; }
+.gacha-result-wrap[data-rarity="R"] .gacha-result-aura::after { display: none; }
+.gacha-result-wrap[data-rarity="SR"] .gacha-result-aura { --ring-duration: 2s; }
+.gacha-result-wrap[data-rarity="SSR"] .gacha-result-aura { --ring-duration: 2.4s; }
+.gacha-card-sparkle {
+  width: 0.85rem;
+  height: 0.85rem;
+  background: var(--rarity);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  filter: drop-shadow(0 0 6px var(--rarity));
+  animation: gacha-card-sparkle 1.5s ease-out var(--spark-delay) both;
 }
 .gacha-reel-track {
   transform: translate3d(var(--reel-offset, 0px), 0, 0);
@@ -349,8 +379,8 @@ body {
   isolation: isolate;
 }
 .gacha-celebration-flash {
-  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--accent-vivid) 30%, transparent), transparent 72%);
-  animation: gacha-screen-flash 950ms ease-out both;
+  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--celebration-color) var(--wash-color-amount, 26%), transparent), transparent 72%);
+  animation: gacha-screen-flash 800ms ease-out both;
 }
 .gacha-firework-ring {
   width: 4rem;
@@ -358,7 +388,7 @@ body {
   border: 3px solid currentColor;
   border-radius: 50%;
   box-shadow: 0 0 30px currentColor;
-  animation: gacha-firework-ring 1.5s ease-out var(--burst-delay) both;
+  animation: gacha-firework-ring var(--burst-duration, 1.5s) ease-out var(--burst-delay) both;
 }
 .gacha-firework-spark {
   width: 9px;
@@ -366,7 +396,19 @@ body {
   border-radius: 999px;
   background: currentColor;
   box-shadow: 0 0 18px currentColor;
-  animation: gacha-firework-spark 2.2s cubic-bezier(0.12, 0.6, 0.18, 1) var(--burst-delay) both;
+  animation: gacha-firework-spark var(--spark-duration, 2.2s) cubic-bezier(0.12, 0.6, 0.18, 1) var(--burst-delay) both;
+}
+.gacha-celebration[data-rarity="R"] {
+  --wash-color-amount: 16%;
+  --wash-opacity: 0.65;
+  --burst-duration: 1.05s;
+  --spark-duration: 1.35s;
+}
+.gacha-celebration[data-rarity="SR"] {
+  --wash-color-amount: 20%;
+  --wash-opacity: 0.72;
+  --burst-duration: 1.3s;
+  --spark-duration: 1.7s;
 }
 .gacha-screen-confetti {
   top: -3rem;
@@ -386,8 +428,21 @@ body {
   from { transform: translate3d(0, 10px, 0) scale(0.85); opacity: 0; }
   to { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
 }
+@keyframes gacha-card-reveal {
+  from { transform: translate3d(0, 12px, 0) scale(0.78); opacity: 0; }
+  to { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+@keyframes gacha-card-ring {
+  from { transform: scale(0.72); opacity: 0.8; }
+  to { transform: scale(1.65); opacity: 0; }
+}
+@keyframes gacha-card-sparkle {
+  0% { transform: scale(0) rotate(0); opacity: 0; }
+  25% { transform: scale(1.3) rotate(25deg); opacity: 1; }
+  100% { transform: scale(0.25) rotate(90deg); opacity: 0; }
+}
 @keyframes gacha-screen-flash {
-  from { opacity: 0.85; }
+  from { opacity: var(--wash-opacity, 0.85); }
   to { opacity: 0; }
 }
 @keyframes gacha-firework-ring {
@@ -418,9 +473,12 @@ body {
   .gacha-idle-track,
   .gacha-spin-progress,
   .gacha-congrats,
-  .gacha-celebration { animation: none; }
+  .gacha-celebration,
+  .gacha-result-reveal { animation: none; }
   .gacha-spin-progress { transform: scaleX(1); }
-  .gacha-celebration { display: none; }
+  .gacha-celebration,
+  .gacha-result-aura,
+  .gacha-card-sparkle { display: none; }
 }
 
 /* ==========================================================================
@@ -540,6 +598,13 @@ body {
 .motion-countdown {
   transform-origin: left center;
   animation: countdown var(--countdown) linear both;
+}
+
+/* Let the phone's compositor focus on decoding the welcome video. */
+.garden-paused .motion-fall,
+.garden-paused .motion-sway,
+.garden-paused .motion-float {
+  animation-play-state: paused;
 }
 
 /* Tôn trọng người dùng bật "giảm chuyển động" — mọi thứ đứng yên ở trạng thái cuối */
