@@ -199,7 +199,8 @@ Màu mèo/trà sữa là token riêng (`--cat-*`, `--tea-*`, `--tapioca`, `--str
 ## Âm thanh & video
 
 - Nút đầu tiên = cú tương tác mở khóa autoplay có tiếng (video + nhạc nền).
-- Video chào mừng: nút **Bỏ qua** + **Tắt tiếng** luôn hiện.
+- Video chào mừng: Bischao2 (giữ tiếng gốc) nối với bischao (bỏ tiếng gốc, phát đoạn
+  Please Tell Me Why 0:28–0:40, hình được kéo tới 12 giây); nút **Bỏ qua** + **Tắt tiếng** luôn hiện.
 - Video lỗi: nếu lỗi lúc còn ở màn chờ thì **không** bỏ qua màn chờ; khi bấm nút sẽ vào thẳng
   giao diện chính (nhạc vẫn được mở khóa).
 - Nhạc nền chỉ phát **sau** video, fade-in 1.5s, mặc định 35%, lặp; nút bật/tắt và thanh chỉnh
