@@ -13,7 +13,7 @@ export const media: {
   introCaptions: string | null;
   music: string | null;
 } = {
-  introVideo: null,
+  introVideo: "/media/bis-chao-2.mp4",
   introPoster: null,
   introCaptions: null,
   music: "/media/couple-n-thousand-stars.mp3",
